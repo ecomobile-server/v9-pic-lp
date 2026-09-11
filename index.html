@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create images and videos with AI in V9Pic. Make reels, stories and photo slideshows with templates, music and creative effects." />
+  <title>V9Pic - AI Image & Video Generator</title>
+  <link rel="icon" type="image/png" href="assets/app-icon.png" />
+  <style>
+    :root {
+      --bg: #080a08;
+      --panel: #0f130f;
+      --panel-2: #151a15;
+      --text: #f7f8f4;
+      --muted: #aeb7ae;
+      --accent: #b8ff3d;
+      --accent-2: #ff4d79;
+      --line: rgba(255,255,255,.10);
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 85% 8%, rgba(184,255,61,.11), transparent 24%),
+        radial-gradient(circle at 15% 25%, rgba(255,77,121,.08), transparent 26%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .container { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(8,10,8,.72);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav-inner { height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:-.02em; }
+    .logo {
+      width: 42px; height: 42px; border-radius: 13px;
+      object-fit:contain; flex-shrink:0;
+    }
+    .nav-links { display:flex; align-items:center; gap:28px; color:#c9d0c9; font-size:14px; }
+    .button {
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding: 13px 18px; border-radius: 14px; border: 1px solid transparent;
+      font-weight:800; transition:.22s ease; cursor:pointer;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { background: var(--accent); color:#0c100a; box-shadow: 0 16px 45px rgba(184,255,61,.16); }
+    .button-ghost { border-color:var(--line); background: rgba(255,255,255,.04); color:#fff; }
+
+    .hero { padding: 84px 0 72px; overflow:hidden; }
+    .hero-grid { display:grid; grid-template-columns: 1.02fr .98fr; align-items:center; gap:64px; }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px;
+      border:1px solid rgba(184,255,61,.28); background:rgba(184,255,61,.08); color:#dcff9c;
+      font-size:13px; font-weight:800; margin-bottom:24px;
+    }
+    h1 { margin:0; font-size: clamp(50px, 7.3vw, 88px); line-height:.94; letter-spacing:-.065em; max-width:780px; }
+    .gradient-text { background: linear-gradient(90deg, #fff 0%, #d9ff88 52%, #ff9ab4 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero-copy { color:var(--muted); font-size:18px; max-width:620px; margin:26px 0 32px; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .trust { display:flex; flex-wrap:wrap; gap:22px; margin-top:30px; color:#bcc5bc; font-size:14px; }
+    .trust strong { color:#fff; }
+
+    .visual { position:relative; min-height:590px; display:grid; place-items:center; }
+    .glow { position:absolute; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle, rgba(184,255,61,.22), transparent 66%); filter:blur(10px); }
+    .phone {
+      width: 260px; border-radius: 34px; border: 8px solid #1d211d; background:#050505; padding:8px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.55); position:relative; z-index:3; transform:rotate(-3deg);
+    }
+    .phone img { width:100%; aspect-ratio: 9/16; object-fit:cover; border-radius:22px; }
+    .float-card {
+      position:absolute; z-index:5; padding:14px; border-radius:20px; width:180px;
+      background:rgba(20,24,20,.86); border:1px solid var(--line); backdrop-filter:blur(18px);
+      box-shadow:0 24px 70px rgba(0,0,0,.35);
+    }
+    .float-card img { border-radius:14px; aspect-ratio: 9/16; object-fit:cover; }
+    .float-card.one { left:10px; top:58px; transform:rotate(-7deg); }
+    .float-card.two { right:8px; bottom:44px; transform:rotate(8deg); }
+
+    .section { padding: 84px 0; }
+    .section-head { display:flex; justify-content:space-between; gap:30px; align-items:end; margin-bottom:34px; }
+    .kicker { color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-size:12px; font-weight:900; }
+    h2 { font-size:clamp(36px, 5vw, 58px); line-height:1; letter-spacing:-.045em; margin:8px 0 0; }
+    .section-desc { max-width:510px; color:var(--muted); }
+    .features { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+    .card { padding:28px; border-radius:26px; background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)); border:1px solid var(--line); min-height:220px; }
+    .icon { width:46px; height:46px; border-radius:14px; display:grid; place-items:center; background:rgba(184,255,61,.11); color:var(--accent); font-size:22px; }
+    .card h3 { margin:26px 0 10px; font-size:21px; }
+    .card p { color:var(--muted); margin:0; }
+
+    .gallery-wrap { overflow:hidden; }
+    .gallery { display:grid; grid-template-columns: repeat(4,1fr); gap:18px; }
+    .gallery img { width:100%; aspect-ratio:9/16; object-fit:cover; border-radius:24px; border:1px solid var(--line); background:#111; box-shadow:0 20px 55px rgba(0,0,0,.28); }
+    .gallery img:nth-child(2), .gallery img:nth-child(4) { transform:translateY(34px); }
+
+    .cta { padding: 92px 0 110px; }
+    .cta-box {
+      padding:70px 34px; border-radius:34px; text-align:center; position:relative; overflow:hidden;
+      background: linear-gradient(135deg, rgba(184,255,61,.15), rgba(255,77,121,.10) 60%, rgba(142,108,255,.14));
+      border:1px solid rgba(255,255,255,.11);
+    }
+    .cta-box:before { content:""; position:absolute; inset:auto -10% -70% auto; width:500px; height:500px; border-radius:50%; background:rgba(184,255,61,.10); filter:blur(12px); }
+    .cta-box h2 { max-width:760px; margin:0 auto 18px; }
+    .cta-box p { color:#c6cec6; max-width:600px; margin:0 auto 28px; }
+    footer { border-top:1px solid var(--line); color:#929b92; font-size:14px; }
+    .footer-inner { min-height:94px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .footer-links { display:flex; gap:20px; }
+
+    @media (max-width: 900px) {
+      .nav-links a:not(.button) { display:none; }
+      .hero { padding-top:56px; }
+      .hero-grid { grid-template-columns:1fr; gap:26px; }
+      .visual { min-height:530px; }
+      .features { grid-template-columns:1fr 1fr; }
+      .gallery { grid-template-columns:repeat(2,1fr); }
+      .gallery img:nth-child(2), .gallery img:nth-child(4) { transform:none; }
+      .section-head { display:block; }
+      .section-desc { margin-top:18px; }
+    }
+    @media (max-width: 600px) {
+      .container { width:min(calc(100% - 24px), var(--max)); }
+      .nav-inner { height:66px; }
+      .nav-links .button { padding:10px 12px; font-size:13px; }
+      h1 { font-size:52px; }
+      .hero-copy { font-size:16px; }
+      .visual { min-height:470px; }
+      .phone { width:210px; }
+      .float-card { width:128px; padding:8px; }
+      .float-card.one { left:-8px; }
+      .float-card.two { right:-8px; }
+      .section { padding:62px 0; }
+      .features { grid-template-columns:1fr; }
+      .gallery { gap:10px; }
+      .gallery img { border-radius:17px; }
+      .cta { padding:50px 0 70px; }
+      .cta-box { padding:52px 20px; border-radius:26px; }
+      .footer-inner { flex-direction:column; justify-content:center; padding:24px 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="V9Pic home"><img class="logo" src="assets/app-icon.png" alt="" width="42" height="42" /><span>V9Pic</span></a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screens">Screens</a>
+        <a class="button button-primary" href="https://play.google.com/store/apps/details?id=com.eco.photoeditor.videomaker" target="_blank" rel="noopener">Get the app ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">✦ AI image & video generation</div>
+          <h1>Create <span class="gradient-text">reels that stop the scroll.</span></h1>
+          <p class="hero-copy">Create images and videos with AI, then bring your content into Reels, Stories and 9:16 slideshows with trending templates, music and creative effects.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://play.google.com/store/apps/details?id=com.eco.photoeditor.videomaker" target="_blank" rel="noopener">▶ Download on Google Play</a>
+            <a class="button button-ghost" href="#features">Explore features</a>
+          </div>
+          <div class="trust">
+            <span><strong>500K+</strong> downloads</span>
+            <span><strong>3.9★</strong> rating</span>
+            <span><strong>Weekly</strong> templates</span>
+          </div>
+        </div>
+
+        <div class="visual" aria-label="V9Pic app previews">
+          <div class="glow"></div>
+          <div class="float-card one"><img src="assets/preview-1.jpg" alt="Trending templates preview"></div>
+          <div class="phone"><img src="assets/preview-2.jpg" alt="Create reels in seconds"></div>
+          <div class="float-card two"><img src="assets/preview-3.jpg" alt="AI magic effects preview"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <div><div class="kicker">Everything you need</div><h2>Simple tools.<br>Polished results.</h2></div>
+          <p class="section-desc">Designed for quick social creation: choose a template, add your media, customize the look and export something ready to share.</p>
+        </div>
+        <div class="features">
+          <article class="card"><div class="icon">▣</div><h3>Reels & Story Maker</h3><p>Create Instagram-style Reels and Stories with modern layouts, motion and ready-made templates.</p></article>
+          <article class="card"><div class="icon">✦</div><h3>AI Image & Video Generator</h3><p>Create images and videos with AI to bring your creative ideas to life.</p></article>
+          <article class="card"><div class="icon">♫</div><h3>Music & Beat Sync</h3><p>Add music and automatically align your slideshow timing for a cleaner, more dynamic result.</p></article>
+          <article class="card"><div class="icon">◫</div><h3>Photo Slideshows</h3><p>Combine photos into smooth 9:16 videos with transitions, captions, stickers and visual effects.</p></article>
+          <article class="card"><div class="icon">✂</div><h3>Background Tools</h3><p>Remove backgrounds, isolate subjects and build clean compositions in just a few taps.</p></article>
+          <article class="card"><div class="icon">⌁</div><h3>Trending Templates</h3><p>Keep content fresh with a growing library of styles for travel, lifestyle, promotions and daily moments.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-wrap" id="screens">
+      <div class="container">
+        <div class="section-head">
+          <div><div class="kicker">App preview</div><h2>Made for vertical content.</h2></div>
+          <p class="section-desc">Explore AI image and video creation, templates and creative effects in V9Pic.</p>
+        </div>
+        <div class="gallery">
+          <img loading="lazy" src="assets/preview-2.jpg" alt="V9Pic screenshot 1">
+          <img loading="lazy" src="assets/preview-1.jpg" alt="V9Pic screenshot 2">
+          <img loading="lazy" src="assets/preview-3.jpg" alt="V9Pic screenshot 3">
+          <img loading="lazy" src="assets/preview-4.jpg" alt="V9Pic screenshot 4">
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Your story. Your style. Your next reel.</h2>
+          <p>Create images and videos with AI, and make them your own with templates and easy customization in V9Pic.</p>
+          <a class="button button-primary" href="https://play.google.com/store/apps/details?id=com.eco.photoeditor.videomaker" target="_blank" rel="noopener">▶ Get V9Pic on Google Play</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2026 Eco Mobile Editor · V9Pic</div>
+      <div class="footer-links">
+        <a href="https://policy.ecomobile.vn" target="_blank" rel="noopener">Privacy</a>
+        <a href="mailto:photovideomaker@ecomobile.vn">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
